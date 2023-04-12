@@ -27,36 +27,42 @@ namespace EnvManagerUX
     public sealed partial class MainPage : Page
     {
         string userglyph = "\uE13D";
-        string systemglpyh = "\uE977";
-        ObservableCollection<EnvVar> envList = new ObservableCollection<EnvVar>();
-        ObservableCollection<EnvVar> java8List = new ObservableCollection<EnvVar>();
-        ObservableCollection<EnvVar> java10List = new ObservableCollection<EnvVar>();
+        string systemglyph = "\uE977";
+        ObservableCollection<EnvVar> userList = new ObservableCollection<EnvVar>();
+        ObservableCollection<EnvVar> systemList = new ObservableCollection<EnvVar>();
+        ObservableCollection<EnvVar> allList = new ObservableCollection<EnvVar>();
         public MainPage()
         {
             this.InitializeComponent();
-            envList.Add(new EnvVar() { Icon = userglyph, Name = "OneDrive", Value = @"C:\Users\nielslaute\OneDrive - Microsoft" });
-            envList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveCommercial", Value = @"C:\Users\nielslaute\OneDrive - Microsoft" });
-            envList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveConsumer", Value = @"C:\Users\nielslaute\OneDrive" });
-            envList.Add(new EnvVar() { Icon = userglyph, Name = "Path", Value = @"%USERPROFILE%\AppData\Local\Microsoft\WindowsApps" });
-            envList.Add(new EnvVar() { Value = @"C:\Users\nielslaute\AppData\Local\GitHubDesktop\bin" });
-            envList.Add(new EnvVar() { Value = @"C:\Users\nielslaute\AppData\Local\Programs\Microsoft VS Code\bin" });
-            envList.Add(new EnvVar() { Value = @"%USERPROFILE%\.dotnet\tools" });
-            envList.Add(new EnvVar() { Icon = userglyph, Name = "TEMP", Value = @"%USERPROFILE%\AppData\Local\Temp" });
-            envList.Add(new EnvVar() { Icon = userglyph, Name = "TMP", Value = @"%USERPROFILE%\AppData\Local\Temp" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDrive", Value = @"C:\Users\nielslaute\OneDrive - Microsoft" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveCommercial", Value = @"C:\Users\nielslaute\OneDrive - Microsoft" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveConsumer", Value = @"C:\Users\nielslaute\OneDrive" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "Path", Value = @"%USERPROFILE%\AppData\Local\Microsoft\WindowsApps" });
+            userList.Add(new EnvVar() { Value = @"C:\Users\nielslaute\AppData\Local\GitHubDesktop\bin" });
+            userList.Add(new EnvVar() { Value = @"C:\Users\nielslaute\AppData\Local\Programs\Microsoft VS Code\bin" });
+            userList.Add(new EnvVar() { Value = @"%USERPROFILE%\.dotnet\tools" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "TEMP", Value = @"%USERPROFILE%\AppData\Local\Temp" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "TMP", Value = @"%USERPROFILE%\AppData\Local\Temp" });
 
-            envList.Add(new EnvVar() { Icon = systemglpyh, Name = "ComSpec", Value = @"%SystemRoot%\system32\cmd.exe" });
-            envList.Add(new EnvVar() { Icon = systemglpyh, Name = "DriverData", Value = @"C:\Windows\System32\Drivers\DriverData" });
-            envList.Add(new EnvVar() { Icon = systemglpyh, Name = "OS", Value = @"Windows_NET" });
+            systemList.Add(new EnvVar() { Icon = systemglyph, Name = "ComSpec", Value = @"%SystemRoot%\system32\cmd.exe" });
+            systemList.Add(new EnvVar() { Icon = systemglyph, Name = "DriverData", Value = @"C:\Windows\System32\Drivers\DriverData" });
+            systemList.Add(new EnvVar() { Icon = systemglyph, Name = "OS", Value = @"Windows_NET" });
 
-            java8List.Add(new EnvVar() { Icon = systemglpyh, Name = "JAVA_HOME", Value = @"C:\Program Files\Java\8\jdk1.8.0_151" });
-            java8List.Add(new EnvVar() { Icon = userglyph, Name = "javaroot", Value = "%JAVA_HOME%\bin" });
+            systemList.Add(new EnvVar() { Icon = systemglyph, Name = "JAVA_HOME", Value = @"C:\Program Files\Java\8\jdk1.8.0_151" });
+            systemList.Add(new EnvVar() { Icon = systemglyph, Name = "javaroot", Value = "%JAVA_HOME%\bin" });
 
-            java10List.Add(new EnvVar() { Icon = systemglpyh, Name = "JAVA_HOME", Value = @"C:\Program Files\Java\10\jdk1.8.0_151" });
-            java10List.Add(new EnvVar() { Icon = userglyph, Name = "javaroot", Value = "%JAVA_HOME%\bin" });
-            AllVars.ItemsSource = envList;
+            //java10List.Add(new EnvVar() { Icon = systemglpyh, Name = "JAVA_HOME", Value = @"C:\Program Files\Java\10\jdk1.8.0_151" });
+            //java10List.Add(new EnvVar() { Icon = userglyph, Name = "javaroot", Value = "%JAVA_HOME%\bin" });
 
-            Java8ListView.ItemsSource = java8List;
-            Java10ListView.ItemsSource = java10List;
+            foreach (var item in userList)
+            {
+                allList.Add(item);
+            }
+
+            foreach (var item in systemList)
+            {
+                allList.Add(item);
+            }
         }
 
         private void List_DragOver(object sender, DragEventArgs e)
@@ -119,31 +125,31 @@ namespace EnvManagerUX
                     // Only other case is if the target ListView has no items (the dropped item will be
                     //      the first). In that case, the insertion index will remain zero.
 
-                    // Find correct source list
-                    if (target.Name == "AllVars")
-                    {
-                        envList.Insert(index, temp);
-                        foreach (EnvVar contact in Java8ListView.Items)
-                        {
-                            if (contact.Icon == temp.Icon && contact.Name == temp.Name && contact.Value == temp.Value)
-                            {
-                                java8List.Remove(contact);
-                                break;
-                            }
-                        }
-                    }
-                    else if (target.Name == "Java8ListView")
-                    {
-                        java8List.Insert(index, temp);
-                        foreach (EnvVar contact in AllVars.Items)
-                        {
-                            if (contact.Icon == temp.Icon && contact.Name == temp.Name && contact.Value == temp.Value)
-                            {
-                                envList.Remove(contact);
-                                break;
-                            }
-                        }
-                    }
+                    //// Find correct source list
+                    //if (target.Name == "AllVars")
+                    //{
+                    //    userList.Insert(index, temp);
+                    //    foreach (EnvVar contact in SystemListView.Items)
+                    //    {
+                    //        if (contact.Icon == temp.Icon && contact.Name == temp.Name && contact.Value == temp.Value)
+                    //        {
+                    //            java8List.Remove(contact);
+                    //            break;
+                    //        }
+                    //    }
+                    //}
+                    //else if (target.Name == "Java8ListView")
+                    //{
+                    //    java8List.Insert(index, temp);
+                    //    foreach (EnvVar contact in userList.Items)
+                    //    {
+                    //        if (contact.Icon == temp.Icon && contact.Name == temp.Name && contact.Value == temp.Value)
+                    //        {
+                    //            SystemListView.Remove(contact);
+                    //            break;
+                    //        }
+                    //    }
+                    //}
                 }
 
                 e.AcceptedOperation = DataPackageOperation.Move;
@@ -170,9 +176,16 @@ namespace EnvManagerUX
             }
         }
 
-        private async void DropDownButton_Click(object sender, RoutedEventArgs e)
+        private async void VarButton_Click(object sender, RoutedEventArgs e)
         {
+           NameBox.Text = "";
+           ValueBox.Text = "";
             var result = await NewDialog.ShowAsync();
+        }
+
+        private async void ProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await ProfileDialog.ShowAsync();
         }
 
         private void NewDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -183,14 +196,17 @@ namespace EnvManagerUX
 
             if (TypeBox.SelectedIndex == 0)
             {
-                x.Icon = "\uE13D";
+                x.Icon = userglyph;
+                userList.Add(x);
             }
             else
             {
-                x.Icon = "\uE770";
+                x.Icon = systemglyph;
+                systemList.Add(x);
             }
 
-            envList.Add(x);
+        
+            allList.Add(x);
         }
     }
 }
