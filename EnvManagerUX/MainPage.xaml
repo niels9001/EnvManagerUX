@@ -10,11 +10,13 @@
     controls:BackdropMaterial.ApplyToRootOrPageBackground="True"
     mc:Ignorable="d">
     <Page.Resources>
+
         <DataTemplate x:Key="EnvVarListViewItemTemplate" x:DataType="classes:EnvVar">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="48" />
                     <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="48" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
@@ -26,12 +28,40 @@
                     Margin="-16"
                     VerticalAlignment="Center"
                     Text="{x:Bind Name}" />
-                <TextBlock
+                <Border
                     Grid.Column="2"
+                    Width="16"
+                    Height="16"
+                    HorizontalAlignment="Center"
+                    Background="{ThemeResource SystemFillColorCautionBrush}"
+                    CornerRadius="12"
+                    Visibility="{x:Bind IsWarning}">
+                    <FontIcon
+                        FontSize="16"
+                        Foreground="White"
+                        Glyph="&#xF13C;" />
+                    <ToolTipService.ToolTip>
+                        <ToolTip Placement="Bottom">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="This variable might overwrite the folling variables:"/>
+                                <TextBlock Margin="0,8,0,0">
+                                <Run Text="OneDriveConsumer" FontWeight="SemiBold"/>
+                                <Run Text="in"/>
+                                <Run Text="Java 8" FontWeight="SemiBold"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                        
+                    </ToolTipService.ToolTip>
+                </Border>
+                <TextBlock
+                    Grid.Column="3"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     Text="{x:Bind Value}" />
+
+
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -184,7 +214,74 @@
                         Drop="List_Drop"
                         ItemTemplate="{StaticResource EnvVarListViewItemTemplate}"
                         ItemsSource="{x:Bind userList, Mode=OneWay}"
-                        SelectionMode="Single" />
+                        SelectionMode="Single">
+                        <ListView.ItemContainerStyleSelector>
+                            <local:CustomItemContainerStyleSelector>
+                                <local:CustomItemContainerStyleSelector.DefaultStyle>
+                                    <Style BasedOn="{StaticResource DefaultListViewItemStyle}" TargetType="ListViewItem" />
+                                </local:CustomItemContainerStyleSelector.DefaultStyle>
+                                <local:CustomItemContainerStyleSelector.WarningStyle>
+                                    <Style BasedOn="{StaticResource DefaultListViewItemStyle}" TargetType="ListViewItem">
+                                        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+                                        <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+                                        <Setter Property="Background" Value="{ThemeResource SystemFillColorCautionBackgroundBrush}" />
+                                        <Setter Property="Foreground" Value="{ThemeResource ListViewItemForeground}" />
+                                        <Setter Property="TabNavigation" Value="Local" />
+                                        <Setter Property="IsHoldingEnabled" Value="True" />
+                                        <Setter Property="Padding" Value="12,0,12,0" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}" />
+                                        <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}" />
+                                        <Setter Property="AllowDrop" Value="False" />
+                                        <Setter Property="UseSystemFocusVisuals" Value="True" />
+                                        <Setter Property="FocusVisualMargin" Value="0" />
+                                        <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource ListViewItemFocusVisualPrimaryBrush}" />
+                                        <Setter Property="FocusVisualPrimaryThickness" Value="2" />
+                                        <Setter Property="FocusVisualSecondaryBrush" Value="{ThemeResource ListViewItemFocusVisualSecondaryBrush}" />
+                                        <Setter Property="FocusVisualSecondaryThickness" Value="1" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListViewItem">
+                                                    <ListViewItemPresenter
+                                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                        CheckBoxBrush="{ThemeResource ListViewItemCheckBoxBrush}"
+                                                        CheckBrush="{ThemeResource ListViewItemCheckBrush}"
+                                                        CheckMode="{ThemeResource ListViewItemCheckMode}"
+                                                        ContentMargin="{TemplateBinding Padding}"
+                                                        ContentTransitions="{TemplateBinding ContentTransitions}"
+                                                        Control.IsTemplateFocusTarget="True"
+                                                        DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                                                        DragBackground="{ThemeResource ListViewItemDragBackground}"
+                                                        DragForeground="{ThemeResource ListViewItemDragForeground}"
+                                                        DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                                                        FocusBorderBrush="{ThemeResource ListViewItemFocusBorderBrush}"
+                                                        FocusSecondaryBorderBrush="{ThemeResource ListViewItemFocusSecondaryBorderBrush}"
+                                                        FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
+                                                        FocusVisualPrimaryBrush="{TemplateBinding FocusVisualPrimaryBrush}"
+                                                        FocusVisualPrimaryThickness="{TemplateBinding FocusVisualPrimaryThickness}"
+                                                        FocusVisualSecondaryBrush="{TemplateBinding FocusVisualSecondaryBrush}"
+                                                        FocusVisualSecondaryThickness="{TemplateBinding FocusVisualSecondaryThickness}"
+                                                        PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackground}"
+                                                        PointerOverBackground="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+                                                        PointerOverForeground="{ThemeResource ListViewItemForegroundPointerOver}"
+                                                        PressedBackground="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+                                                        ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                                                        SelectedBackground="{ThemeResource ListViewItemBackgroundSelected}"
+                                                        SelectedForeground="{ThemeResource ListViewItemForegroundSelected}"
+                                                        SelectedPointerOverBackground="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+                                                        SelectedPressedBackground="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+                                                        SelectionCheckMarkVisualEnabled="{ThemeResource ListViewItemSelectionCheckMarkVisualEnabled}" />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </local:CustomItemContainerStyleSelector.WarningStyle>
+                            </local:CustomItemContainerStyleSelector>
+                        </ListView.ItemContainerStyleSelector>
+                    </ListView>
+
 
                     <TextBlock
                         Margin="1,32,0,8"

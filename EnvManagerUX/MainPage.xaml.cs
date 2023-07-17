@@ -36,12 +36,12 @@ namespace EnvManagerUX
             this.InitializeComponent();
             userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDrive", Value = @"C:\Users\nielslaute\OneDrive - Microsoft" });
             userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveCommercial", Value = @"C:\Users\nielslaute\OneDrive - Microsoft" });
-            userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveConsumer", Value = @"C:\Users\nielslaute\OneDrive" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "OneDriveConsumer", Value = @"C:\Users\nielslaute\OneDrive", IsWarning = true });
             userList.Add(new EnvVar() { Icon = userglyph, Name = "Path", Value = @"%USERPROFILE%\AppData\Local\Microsoft\WindowsApps" });
             userList.Add(new EnvVar() { Value = @"C:\Users\nielslaute\AppData\Local\GitHubDesktop\bin" });
             userList.Add(new EnvVar() { Value = @"C:\Users\nielslaute\AppData\Local\Programs\Microsoft VS Code\bin" });
             userList.Add(new EnvVar() { Value = @"%USERPROFILE%\.dotnet\tools" });
-            userList.Add(new EnvVar() { Icon = userglyph, Name = "TEMP", Value = @"%USERPROFILE%\AppData\Local\Temp" });
+            userList.Add(new EnvVar() { Icon = userglyph, Name = "TEMP", Value = @"%USERPROFILE%\AppData\Local\Temp", IsWarning = true });
             userList.Add(new EnvVar() { Icon = userglyph, Name = "TMP", Value = @"%USERPROFILE%\AppData\Local\Temp" });
 
             systemList.Add(new EnvVar() { Icon = systemglyph, Name = "ComSpec", Value = @"%SystemRoot%\system32\cmd.exe" });
@@ -207,6 +207,24 @@ namespace EnvManagerUX
 
         
             allList.Add(x);
+        }
+    }
+    public class CustomItemContainerStyleSelector : StyleSelector
+    {
+        public Style DefaultStyle { get; set; }
+        public Style WarningStyle { get; set; }
+
+        protected override Style SelectStyleCore(object item, DependencyObject container)
+        {
+            EnvVar selectedVar = item as EnvVar;
+            if (selectedVar.IsWarning == true)
+            {
+                return WarningStyle;
+            }
+            else
+            {
+                return DefaultStyle;
+            }
         }
     }
 }
